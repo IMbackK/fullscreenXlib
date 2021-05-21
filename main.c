@@ -43,6 +43,14 @@ int main(int argc, char** argv)
 	GC gc = XCreateGC(dpy, w, 0, NULL);
 	XSetForeground(dpy, gc, black);
 	
+	if(!ewmh) 
+	{
+		if(XGrabKeyboard(dpy, w, true, GrabModeAsync, GrabModeAsync, CurrentTime) != GrabSuccess)
+			printf("Could not XGrabKeyboard\n");
+		if(XGrabPointer(dpy, w, true, 0, GrabModeAsync, GrabModeAsync,  None, None, CurrentTime) != GrabSuccess)
+			printf("Could not XGrabPointer\n");
+	}
+	
 	while(true) 
 	{
 		XEvent event;
@@ -64,6 +72,13 @@ int main(int argc, char** argv)
 		XDrawArc(dpy, w, gc, 0, 0, sizeX, sizeY, 0, 365*64);
 		XFlush(dpy);
 	}
+	
+	if(!ewmh) 
+	{
+		XUngrabPointer(dpy, CurrentTime);
+		XUngrabKeyboard(dpy, CurrentTime);
+	}
+	return 0;
 }
 
 
